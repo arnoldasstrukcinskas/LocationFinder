@@ -6,11 +6,12 @@
     <title>Location Finder</title>
 </head>
 <body>
-  <form action="">
-    <label>Iveskite adresa</label><br>
-    <input type="text"><br>
-    <input type="submit">
-      <button onclick="window.open('http://localhost:8080/geocoding/coordinates')">Kordinates</button>
-  </form>
+  <div>
+      <form action="#" th:action="@{/geocoding/coordinates}" th:object="${location}">
+          <label>Ivesktie lokacija</label>
+          <input type="text" name="location" th:value="${location}">
+          <input type="submit" value="submit">
+      </form>
+  </div>
 </body>
 </html>
