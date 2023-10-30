@@ -19,9 +19,8 @@ public class LocationFinderServices {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    public String connectToApi() throws IOException, InterruptedException {
+    public String connectToApi(String location) throws IOException, InterruptedException {
 
-        String location = "Vilnius";
 
         HttpClient client = HttpClient.newHttpClient();
 
@@ -39,9 +38,8 @@ public class LocationFinderServices {
 
     public String apiParameters(String parameters){
         StringBuilder urlAddParams = new StringBuilder();
-        String apiKey = "pk.eyJ1IjoiYXJub2xkYXNzdHJ1a2NpbnNrYXMiLCJhIjoiY2xuNGVtbTRpMHZmcTJqbDd4ZW90Z2k4bSJ9.91LzqGuR4nmhfnrpxsX5Qw";
 
-        ////sukurk stringa taip, kad ivestas adresas gautusi taip: -> ......mapbox.places/kaunas%20elniaragiu%20takas%207.json?prox.....
+        ////sukuriu stringa taip, kad ivestas adresas gautusi taip: -> ......mapbox.places/kaunas%20elniaragiu%20takas%207.json?prox.....
         String urlParameters = parameters.replace(" ", "%20");
         urlAddParams.append(urlParameters);
         urlAddParams.append(".json?");

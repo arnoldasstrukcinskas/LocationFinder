@@ -4,8 +4,7 @@ import BigB_Project.LocationFinder.Services.LocationFinderServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -23,13 +22,11 @@ public class ApiController {
     }
 
     // http://localhost:8080/geocoding/coordinates
-    @GetMapping(value = "/coordinates")
-    public String getCoordinates(Model model) throws IOException, InterruptedException {
-
-        String coordinates = locationFinderServices.connectToApi();
-        model.addAttribute("coordinates", coordinates);
+    @RequestMapping(value = "/coordinates", method = RequestMethod.GET)
+    public String getCoordinates(Model model, @ModelAttribute(value = "location") String location) throws IOException, InterruptedException {
+//        model.addAttribute("location", location);
+//        //        locationFinderServices.connectToApi(location);
+        model.addAttribute("coordinates", locationFinderServices.connectToApi(location));
         return "result";
     }
 }
-
-//Isbandau Branch
