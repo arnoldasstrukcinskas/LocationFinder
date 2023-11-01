@@ -7,9 +7,11 @@
 </head>
 <body>
   <div>
-      <form action="#" th:action="@{/geocoding/coordinates}" th:object="${location}">
-          <label>Ivesktie lokacija</label>
-          <input type="text" name="location" th:value="${location}">
+      <form th:action="@{/geocoding/coordinates}" method="get">
+          <label>Pradzios taskas</label>
+          <input type="text" name="startPoint" th:value="${startPoint}"/>
+          <label>Pabaigos taskas</label>
+          <input type="text" name="endPoint" th:value="${endPoint}"/>
           <input type="submit" value="submit">
       </form>
   </div>
