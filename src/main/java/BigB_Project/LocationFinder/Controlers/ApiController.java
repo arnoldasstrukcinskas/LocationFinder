@@ -23,10 +23,14 @@ public class ApiController {
 
     // http://localhost:8080/geocoding/coordinates
     @RequestMapping(value = "/coordinates", method = RequestMethod.GET)
-    public String getCoordinates(Model model, @ModelAttribute(value = "location") String location) throws IOException, InterruptedException {
-//        model.addAttribute("location", location);
-//        //        locationFinderServices.connectToApi(location);
-        model.addAttribute("coordinates", locationFinderServices.connectToApi(location));
+    public String getCoordinates(Model model,
+                                 @RequestParam(value = "startPoint", required = true) String startPoint,
+                                 @RequestParam(value = "endPoint", required = true) String endPoint) throws IOException, InterruptedException {
+            model.addAttribute("startPointModel", locationFinderServices.startPointCoordinates(startPoint));
+            model.addAttribute("endPointModel", locationFinderServices.endPointCoordinates(endPoint));
+            model.addAttribute("directions", locationFinderServices.getDirections(startPoint, endPoint));
         return "result";
     }
+
+
 }

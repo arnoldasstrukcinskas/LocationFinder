@@ -1,5 +1,7 @@
 package BigB_Project.LocationFinder.Services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +10,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class LocationFinderServices {
@@ -19,21 +19,56 @@ public class LocationFinderServices {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    public String connectToApi(String location) throws IOException, InterruptedException {
-
+    public String startPointCoordinates(String startPoint) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
 
         String apiUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
 
-        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(apiUrl + apiParameters(location)))
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(apiUrl + apiParameters(startPoint)))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        String jsonBody = response.body();
 
-        return jsonBody;
+        String jsonResponse = response.body();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode data = objectMapper.readTree(jsonResponse);
+
+        JsonNode geometry = data.at("/features/0/geometry");
+        JsonNode coordinates = geometry.at("/coordinates");
+
+            double latitude = coordinates.get(1).asDouble();
+            double longitude = coordinates.get(0).asDouble();
+
+        return longitude + "," + latitude + ";";
+    }
+
+    public String endPointCoordinates(String endPoint) throws IOException, InterruptedException {
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        String apiUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(apiUrl + apiParameters(endPoint)))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        String jsonResponse = response.body();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode data = objectMapper.readTree(jsonResponse);
+
+        JsonNode geometry = data.at("/features/0/geometry");
+        JsonNode coordinates = geometry.at("/coordinates");
+
+        double latitude = coordinates.get(1).asDouble();
+        double longitude = coordinates.get(0).asDouble();
+
+        return longitude + "," + latitude + "?";
     }
 
     public String apiParameters(String parameters){
@@ -47,4 +82,26 @@ public class LocationFinderServices {
         urlAddParams.append(apiKey);
         return urlAddParams.toString();
     }
+
+    public String getDirections(String startPoint, String endPoint) throws IOException, InterruptedException {
+
+        String startCoordinates = startPointCoordinates(startPoint);
+        String endCoordinates = endPointCoordinates(endPoint);
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        String apiUrl = "https://api.mapbox.com/directions/v5/mapbox/cycling/";
+
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(apiUrl + startCoordinates + endCoordinates + "geometries=geojson&access_token=" + apiKey))
+                .GET()
+                .header("Accept", "application/json")
+                .build();
+
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        String jsonResponse = response.body();
+
+        return jsonResponse;
+    }
+//    Pvz: https://api.mapbox.com/directions/v5/mapbox/cycling/-84.518641,39.134270;-84.512023,39.102779?geometries=geojson&access_token=pk.eyJ1IjoiYXJub2xkYXNzdHJ1a2NpbnNrYXMiLCJhIjoiY2xuNGVtbTRpMHZmcTJqbDd4ZW90Z2k4bSJ9.91LzqGuR4nmhfnrpxsX5Qw
 }
