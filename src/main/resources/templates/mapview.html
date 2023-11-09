@@ -14,7 +14,7 @@
 
 <div id="map" style="position: absolute; width: 100%; height: 100%"></div>
 <script>
-    const ACCESS_TOKEN = 'API key';
+    const ACCESS_TOKEN = '';
 
     mapboxgl.accessToken = ACCESS_TOKEN;
     const map = new mapboxgl.Map({
@@ -24,18 +24,46 @@
     zoom: 8.8
     });
 
-    const searchJS = document.getElementById('search-js');
-    searchJS.onload = function () {
-    const searchBox = new MapboxSearchBox();
-    searchBox.accessToken = ACCESS_TOKEN;
-    searchBox.options = {
-    types: 'address,poi',
-    proximity: [-73.99209, 40.68933]
-    };
-    searchBox.marker = true;
-    searchBox.mapboxgl = mapboxgl;
-    map.addControl(searchBox);
-    };
+    // Function to perform geocoding using an external API
+    // 'searchText' is a string that you input in search box
+    async function geocode(searchText) {
+        // replace url with your local api endpoint + you can add searchText as a query parameter
+        const response = await fetch(`https://geocode.maps.co/search?q=555+5th+Ave+New+York+NY+10017+US`);
+        const data = await response.json();
+        if (data.length > 0) {
+            const coordinates = [data[0].lon, data[0].lat];
+            // i just log the coordinates here, but it is not necessary
+            console.log(coordinates);
+            return coordinates;
+        } else {
+            return null;
+        }
+    }
+
+    // Handle search and update map based on geocoding result
+    async function handleSearch(query) {
+        const coordinates = await geocode(query);
+        if (coordinates) {
+            map.flyTo({
+                center: coordinates,
+                zoom: 14
+            });
+        } else {
+            alert('Location not found');
+        }
+    }
+
+    // Example usage of the handleSearch function (you can integrate this with your UI elements)
+    const searchInput = document.createElement('input');
+    searchInput.placeholder = 'Search for a location';
+    searchInput.style.position = 'absolute';
+    searchInput.style.top = '10px';  // Adjust the top position as needed
+    searchInput.style.left = '10px';
+    searchInput.addEventListener('change', (event) => {
+        handleSearch(event.target.value);
+    });
+
+    document.body.appendChild(searchInput);
 </script>
 
 </body>
