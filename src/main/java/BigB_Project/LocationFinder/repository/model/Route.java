@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name ="routes")
@@ -31,6 +32,8 @@ public class Route {
     @Column(name = "ending_coordinates")
     private String endingCoordinates;
 
+    @ElementCollection
+    @CollectionTable(name ="optional_coordinate", joinColumns = @JoinColumn(name = "route_id"))
     @Column(name = "optional_coordinates")
-    private ArrayList<String> optionalCoordinates;
+    private List<String> optionalCoordinates = new ArrayList<>();
 }
