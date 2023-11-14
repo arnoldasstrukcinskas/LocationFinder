@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<header>
+
+</header>
+<main>
+    <form th:action="@{/routes/create}" th:object="${route}" method="post">
+        <input type="hidden" th:field="${route.routeId}">
+        <label>Route name</label>
+        <input type="text" th:field="${route.routeName}"><br>
+        <label>Starting coordinates</label>
+        <input type="text" th:field="${route.startingCoordinates}"><br>
+        <label>Ending Coordinates</label>
+        <input type="text" th:field="${route.endingCoordinates}"><br>
+        <label>Optional Coortinates</label>
+        <input type="text" th:field="${route.optionalCoordinates}"><br>
+        <label>Description</label>
+        <input type="text" th:field="${route.routeDescription}"><br>
+        <input type="submit" value="Issaugoti">
+    </form>
+</main>
+<footer>
+
+</footer>
+
+</body>
+</html>

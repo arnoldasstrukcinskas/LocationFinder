@@ -2,7 +2,6 @@ package BigB_Project.LocationFinder.repository.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Routes {
+public class Route {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
