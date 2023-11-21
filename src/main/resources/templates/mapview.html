@@ -8,6 +8,21 @@
     <script id="search-js" defer="" src="https://api.mapbox.com/search-js/v1.0.0-beta.17/web.js"></script>
 </head>
 <body>
+<form id="myForm" th:action="@{/routes/create}" th:object="${route}" method="post">
+    <input type="hidden" th:field="${route.routeId}">
+    <label>Route name</label>
+    <input type="text" id="routeName" th:field="${route.routeName}"><br>
+    <label>Starting coordinates</label>
+    <input type="text" id="startingCoordinates" th:field="${route.startingCoordinates}"><br>
+    <label>Ending Coordinates</label>
+    <input type="text" id="endingCoordinates" th:field="${route.endingCoordinates}"><br>
+    <label>Optional Coortinates</label>
+    <input type="text" id="optionalCoordinates" th:field="${route.optionalCoordinates}"><br>
+    <label>Description</label>
+    <input type="text" id="routeDescription" th:field="${route.routeDescription}"><br>
+    <input type="submit" value="Issaugoti">
+</form>
+
 <!-- Load Mapbox GL JS -->
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
@@ -24,6 +39,37 @@
     zoom: 8.8
     });
 
+    async function handleSearch() {
+        const coordinates = await callBackendMethod();
+        if (coordinates) {
+            map.flyTo({
+                center: coordinates,
+                zoom: 14
+            });
+        } else {
+            alert('Location not found');
+        }
+    }
+
+    async function callBackendMethod() {
+        // replace console.log with your backend method
+        console.log("Route name:", document.getElementById("routeName").value);
+        console.log("Starting coordinates:", document.getElementById("startingCoordinates").value);
+        console.log("Ending Coordinates:", document.getElementById("endingCoordinates").value);
+        console.log("Optional Coordinates:", document.getElementById("optionalCoordinates").value);
+        console.log("Description:", document.getElementById("routeDescription").value);
+    }
+
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevents the form from submitting normally
+        handleSearch();
+    });
+
+
+    // ------------------------------------------------------------------------------------------------------//
+    // ----------------------This section should be deleted--------------------------------------------------//
+    // ---------------------This is just an example----------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------//
     // Function to perform geocoding using an external API
     // 'searchText' is a string that you input in search box
     async function geocode(searchText) {
@@ -57,13 +103,18 @@
     const searchInput = document.createElement('input');
     searchInput.placeholder = 'Search for a location';
     searchInput.style.position = 'absolute';
-    searchInput.style.top = '10px';  // Adjust the top position as needed
+    searchInput.style.top = '200px';  // Adjust the top position as needed
     searchInput.style.left = '10px';
     searchInput.addEventListener('change', (event) => {
         handleSearch(event.target.value);
     });
 
     document.body.appendChild(searchInput);
+
+    // ------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------//
 </script>
 
 </body>
