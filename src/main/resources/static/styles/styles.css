@@ -3,14 +3,16 @@
     top: 40%;
     bottom: 10%;
     width: 50%;
+    border-radius: 0 30% 30% 0;
 }
 
 #instructions {
     position: absolute;
     margin: 20px;
-    width: 15%;
+    height: 30%;
+    width: 25%;
     top: 0;
-    right: 25%;
+    right: 20%;
     bottom: 20%;
     padding: 20px;
     background-color: #fff;
