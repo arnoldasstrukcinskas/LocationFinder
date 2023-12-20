@@ -1,7 +1,10 @@
 package BigB_Project.LocationFinder.repository.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.*;;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +30,18 @@ public class Route {
     private String routeDescription;
 
     @Column(name = "starting_coordinates")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String startingCoordinates;
 
     @Column(name = "ending_coordinates")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String endingCoordinates;
 
+    @Column(name = "json_column")
+    private PostgreSQLJsonPGObjectJsonbType jsonFormat;
+
     @ElementCollection
-    @CollectionTable(name ="optional_coordinate", joinColumns = @JoinColumn(name = "route_id"))
+    @CollectionTable(name ="optional_coordinates", joinColumns = @JoinColumn(name = "route_id"))
     @Column(name = "optional_coordinates")
     private List<String> optionalCoordinates = new ArrayList<>();
 }
