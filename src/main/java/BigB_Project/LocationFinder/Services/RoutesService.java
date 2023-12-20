@@ -45,7 +45,7 @@ public class RoutesService {
         double longitude = cordinates.get(0).asDouble();
         double latitude = cordinates.get(1).asDouble();
 
-        return latitude + "," + longitude;
+        return longitude + "," + latitude;
     }
 
 }
