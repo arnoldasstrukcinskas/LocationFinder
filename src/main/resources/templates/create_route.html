@@ -41,7 +41,9 @@
     <div id='map'></div>
     <div>
         <p id="startingLocation">Pradinis keliones taskas:  </p>
+        <p id="startingCords">Pradinis cords:  </p>
         <p id="endingLocation">Galinis keliones taskas:  </p>
+        <p id="endingCords">Galinis cords:  </p>
         <p id="instructions"></p>
     </div>
 
@@ -111,201 +113,172 @@ map.on('style.load', function () {
         map.addControl(searchEndPoint, 'top-right');
 
         ///pridedu start point event listeneri, kad kai ieskau, gauna searcho info
-    searchStartPoint.addEventListener('retrieve', (event) => {
-        const startFeatureCollection = event.detail;
-        console.log(startFeatureCollectionfeatureCollection);
-        setInterval(getStartCoordinates(startFeatureCollection), 1000);
-    })
-        ///pridedu End point event listeneri, kad kai ieskau, gauna searcho info
-    searchEndPoint.addEventListener('retrieve', (event) => {
-        const endFeatureCollection = event.detail;
-        console.log(endFeatureCollection);
+        searchStartPoint.addEventListener('retrieve', (event) => {
+            const startFeatureCollection = event.detail;
+            console.log(startFeatureCollection);
 
-        setInterval(getEndCoordinates(endFeatureCollection), 1000);
-    })
-
-        getRoute(endCoordinates);
-
-        /////////////////////////////////////////////////////////////
-
-        // Add starting point to the map
-        map.addLayer({
-            id: 'point',
-            type: 'circle',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'FeatureCollection',
-                    features: [
-                        {
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: startCoordinates
-                            }
-                        }
-                    ]
-                }
-            },
-            paint: {
-                'circle-radius': 10,
-                'circle-color': '#3887be'
-            }
-        });
-        map.on('click', (event) => {
-            const coords = Object.keys(event.lngLat).map((key) => event.lngLat[key]);
-            const end = {
-                type: 'FeatureCollection',
-                features: [
-                    {
-                        type: 'Feature',
-                        properties: {},
-                        geometry: {
-                            type: 'Point',
-                            coordinates: coords
-                        }
-                    }
-                ]
-            };
-            if (map.getLayer('end')) {
-                map.getSource('end').setData(end);
-            } else {
-                map.addLayer({
-                    id: 'end',
-                    type: 'circle',
-                    source: {
-                        type: 'geojson',
-                        data: {
-                            type: 'FeatureCollection',
-                            features: [
-                                {
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: coords
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    paint: {
-                        'circle-radius': 10,
-                        'circle-color': '#f30'
-                    }
-                });
-            }
-        });
-    })
-})
-function getRoute(end) {
-    console.log('getRoute function triggered');
-    console.log(startCoordinates);
-    console.log(endCoordinates);
-    // make a directions request using cycling profile
-    // an arbitrary start will always be the same
-    // only the end or destination will change
-    const query = fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${startCoordinates};${end}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-        { method: 'GET' }
-    );
-    query
-        .then(response => response.json())
-        .then(json => {
-            const data = json.routes[0];
-            const route = data.geometry.coordinates;
-            const geojson = {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'LineString',
-                    coordinates: route
-                }
-            };
-            console.log('Route coordinates:', route);
-            // if the route already exists on the map, we'll reset it using setData
-            if (map.getSource('route')) {
-                map.getSource('route').setData(geojson);
-            }
-            // otherwise, we'll make a new request
-            else {
-                map.addLayer({
-                    id: 'route',
-                    type: 'line',
-                    source: {
-                        type: 'geojson',
-                        data: geojson
-                    },
-                    layout: {
-                        'line-join': 'round',
-                        'line-cap': 'round'
-                    },
-                    paint: {
-                        'line-color': '#3887be',
-                        'line-width': 5,
-                        'line-opacity': 0.75
-                    }
-                });
-            }
-            const instructions = document.getElementById('instructions');
-            const steps = data.legs[0].steps;
-
-            let tripInstructions = '';
-            for (const step of steps) {
-                tripInstructions += `<li>${step.maneuver.instruction}</li>`;
-            }
-            instructions.innerHTML = `<p><strong>Trip duration: ${Math.floor(
-                data.duration / 60
-            )} min 🚴 </strong></p><ol>${tripInstructions}</ol>`;
+            $.ajax({                                      // Siunciu objekto Json formata
+                url: "/routes/handleStartPointResponse",  // controllerio methodo URL
+                type: "POST",             // Post nes siunciu info i controlleri
+                contentType: "application/json",
+                data: JSON.stringify(startFeatureCollection),
+                dataType: "json"
+            });
         })
-}
-function getStartCoordinates(featureCollection) {
+        ///pridedu End point event listeneri, kad kai ieskau, gauna searcho info
+        searchEndPoint.addEventListener('retrieve', (event) => {
+            const endFeatureCollection = event.detail;
+            console.log(endFeatureCollection);
 
+            $.ajax({                                    //siunciu objekto Json formata
+                url: "/routes/handleEndPointResponse",  // controllerio methodo URL
+                type: "POST",             // Post nes siunciu info i controlleri
+                contentType: "application/json",
+                data: JSON.stringify(endFeatureCollection),
+                dataType: "json"
+            });
+            getRoute();
+        })
+    });
+});
 
-        $.ajax({                                      // Siunciu objekto Json formata
-            url: "/routes/handleStartPointResponse",  // controllerio methodo URL
-            type: "POST",             // Post nes siunciu info i controlleri
-            contentType: "application/json",
-            data: JSON.stringify(featureCollection),
-            dataType: "json"
-        });
+//Creating directions description functions and painting route.
 
-        $.ajax({            //Pasiemu start cordinates is controllerio
-            url: "/routes/startingLocationCoordinates",
-            type: "GET",
-            success: function (response) {
-                startCoordinates = response.toString();
+function getRoute() {
+
+  fetch(
+    `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${startCoordinates};${endCoordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+    { method: 'GET' }
+  )
+  .then(response => response.json())
+  .then(json => {
+    const data = json.routes[0];
+    const route = data.geometry.coordinates;
+    const geojson = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: route
+      }
+    };
+
+     console.log('GeoJSON object:', geojson);
+
+     if (map.getSource('route')) {
+    map.getSource('route').setData(geojson);
+  }
+  else {
+          map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': {
+              'type': 'geojson',
+              'data': geojson
             },
-            error: function (error) {
-                console.error("Error: No start coordinates", error);
+            'layout': {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            'paint': {
+              'line-color': '#3887be',
+              'line-width': 5,
+              'line-opacity': 0.75
             }
+          });
+          }
+     map.jumpTo({
+            center: [23.9044817, 54.8982139],
+            zoom: 11
         });
+    // get the sidebar and add the instructions
+    const instructions = document.getElementById('instructions');
+    const steps = data.legs[0].steps;
+
+    let tripInstructions = '';
+    for (const step of steps) {
+      tripInstructions += `<li>${step.maneuver.instruction}</li>`;
+    }
+    instructions.innerHTML = `<p><strong>Trip duration: ${Math.floor(
+      data.duration / 60
+    )} min 🚴 </strong></p><ol>${tripInstructions}</ol>`;
+  })
+  .catch(error => {
+    console.error('Error fetching route:', error);
+  });
 }
-function getEndCoordinates(featureCollection) {
+
+                                   // Code from the next step will go here.
+    </script>
 
 
 
-        $.ajax({                                    //siunciu objekto Json formata
-            url: "/routes/handleEndPointResponse",  // controllerio methodo URL
-            type: "POST",             // Post nes siunciu info i controlleri
-            contentType: "application/json",
-            data: JSON.stringify(featureCollection),
-            dataType: "json"
-        });
+    <script>
+        setInterval(updateStartLocation, 5000);
+        setInterval(updateEndLocation, 5000);
+        setInterval(updateStartCoordinates, 1000);
+        setInterval(updateEndCoordinates, 1000);
+
+        function updateStartLocation() {
+            var startLocationName = document.getElementById("startingLocation");
+
+            // Use AJAX to fetch the locationName from the server
+            $.ajax({
+                url: "/routes/startingLocationName",
+                type: "GET",
+                success: function(response) {
+                    startLocationName.innerHTML = "Pradinis keliones taskas: " + response;
+                    console.log("Test: " + response);
+                },
+                error: function(error) {
+                    console.error("Error: No start location name", error);
+                }
+            });
+        }
+
+        function updateEndLocation() {
+            var endLocationName = document.getElementById("endingLocation");
+            $.ajax({
+                url: "/routes/endLocationName",
+                type: "GET",
+                success: function(response) {
+                    endLocationName.innerHTML = "Galinis keliones taskas: " + response;
+                    console.log("Test: " + response);
+                },
+                error: function(error) {
+                    console.error("Error: No end location name", error);
+                }
+            });
+        }
+
+        function updateStartCoordinates(){
+
+         $.ajax({            //Pasiemu start cordinates is controllerio
+                url: "/routes/startingLocationCoordinates",
+                type: "GET",
+                success: function (response) {
+                    startCoordinates = response.toString();
+                    document.getElementById("startingCords").innerHTML = "start coords: " + startCoordinates;
+                },
+                error: function (error) {
+                    console.error("Error: No start coordinates", error);
+                }
+            });
+        }
+        function updateEndCoordinates(){
 
         $.ajax({                //Pasiemu endpoint coordinates is controlerio
-            url: "/routes/endLocationCoordinates",
-            type: "GET",
-            success: function (response) {
-                endCoordinates = response.toString();
-            },
-            error: function (error) {
-                console.error("Error: No ending coordinates ", error)
-            }
-        });
-
-}
+                url: "/routes/endLocationCoordinates",
+                type: "GET",
+                success: function (response) {
+                    endCoordinates = response.toString();
+                    document.getElementById("endingCords").innerHTML = "end coords: " + endCoordinates;
+                },
+                error: function (error) {
+                    console.error("Error: No ending coordinates ", error)
+                }
+            });
+        }
     </script>
 
 </main>
