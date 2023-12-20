@@ -1,0 +1,19 @@
+#map {
+    position: absolute;
+    top: 40%;
+    bottom: 10%;
+    width: 50%;
+}
+
+#instructions {
+    position: absolute;
+    margin: 20px;
+    width: 15%;
+    top: 0;
+    right: 25%;
+    bottom: 20%;
+    padding: 20px;
+    background-color: #fff;
+    overflow-y: scroll;
+    font-family: sans-serif;
+}
