@@ -1,7 +1,7 @@
 package BigB_Project.LocationFinder.repository.model;
 
 import jakarta.persistence.*;
-import lombok.*;;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
 import org.hibernate.type.SqlTypes;
