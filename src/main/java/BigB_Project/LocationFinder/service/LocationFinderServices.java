@@ -1,4 +1,4 @@
-package BigB_Project.LocationFinder.Services;
+package BigB_Project.LocationFinder.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

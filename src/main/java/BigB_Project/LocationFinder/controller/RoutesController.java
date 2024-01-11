@@ -1,7 +1,7 @@
-package BigB_Project.LocationFinder.Controlers;
+package BigB_Project.LocationFinder.controller;
 
 import BigB_Project.LocationFinder.repository.model.Route;
-import BigB_Project.LocationFinder.Services.RoutesService;
+import BigB_Project.LocationFinder.service.RoutesService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

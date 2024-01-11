@@ -1,4 +1,4 @@
-package BigB_Project.LocationFinder.Services;
+package BigB_Project.LocationFinder.service;
 
 import BigB_Project.LocationFinder.repository.RoutesRepository;
 import BigB_Project.LocationFinder.repository.model.Route;

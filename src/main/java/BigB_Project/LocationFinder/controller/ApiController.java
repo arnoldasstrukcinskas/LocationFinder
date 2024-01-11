@@ -1,6 +1,6 @@
-package BigB_Project.LocationFinder.Controlers;
+package BigB_Project.LocationFinder.controller;
 
-import BigB_Project.LocationFinder.Services.LocationFinderServices;
+import BigB_Project.LocationFinder.service.LocationFinderServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
