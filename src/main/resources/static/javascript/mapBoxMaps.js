@@ -1,4 +1,4 @@
-//mapboxgl.accessToken = apiKey;
+mapboxgl.accessToken = apiKey;
 
 let startCoordinates;
 let endCoordinates;
@@ -175,7 +175,8 @@ function updateStartCoordinates() {
         type: "GET",
         success: function (response) {
             startCoordinates = response.toString();
-            document.getElementById("startingCords").innerHTML = "start coords: " + startCoordinates;
+            document.getElementById("startingCoordinates").value = startCoordinates;
+            console.log("startCoordinates logging " + startCoordinates);
         },
         error: function (error) {
             console.error("Error: No start coordinates", error);
@@ -189,7 +190,7 @@ function updateEndCoordinates() {
         type: "GET",
         success: function (response) {
             endCoordinates = response.toString();
-            document.getElementById("endingCords").innerHTML = "end coords: " + endCoordinates;
+            document.getElementById("endingCoordinates").value = endCoordinates;
         },
         error: function (error) {
             console.error("Error: No ending coordinates ", error)
@@ -288,4 +289,8 @@ function addEndSearchBox(endSearchBox) {
     endSearchBox.marker = true;
     endSearchBox.mapboxgl = mapboxgl;
     endPointMap.addControl(endSearchBox, 'top-right');
+}
+
+function redirectOnSubmit(){
+    window.open('http://localhost:8080/routes/create');
 }
