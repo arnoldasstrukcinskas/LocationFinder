@@ -30,18 +30,15 @@ public class Route {
     private String routeDescription;
 
     @Column(name = "starting_coordinates")
-    @JdbcTypeCode(SqlTypes.JSON)
     private String startingCoordinates;
 
     @Column(name = "ending_coordinates")
-    @JdbcTypeCode(SqlTypes.JSON)
     private String endingCoordinates;
 
-    @Column(name = "json_column")
-    private PostgreSQLJsonPGObjectJsonbType jsonFormat;
 
     @ElementCollection
     @CollectionTable(name ="optional_coordinates", joinColumns = @JoinColumn(name = "route_id"))
     @Column(name = "optional_coordinates")
+    @JdbcTypeCode(SqlTypes.JSON)
     private List<String> optionalCoordinates = new ArrayList<>();
 }
