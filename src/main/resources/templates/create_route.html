@@ -18,23 +18,26 @@
 
 <header>
 
+    <div id="menuContainer">
+        <button class="menuButton" id="homeButton">Home</button>
+        <button class="menuButton" id="tripsButton">Trips</button>
+        <button class="menuButton" id="profileButton">Profile</button>
+    </div>
 </header>
 <main>
     <div id="informationFormContainer">
         <form th:action="@{/routes/create}" th:object="${route}" method="post">
             <input type="hidden" th:field="${route.routeId}">
-            <label>Route name</label>
-            <input type="text" th:field="${route.routeName}"><br>
-            <label>Starting coordinates</label>
-            <input type="text" th:field="${route.startingCoordinates}"><br>
-            <label>Ending Coordinates</label>
-            <input type="text" th:field="${route.endingCoordinates}"><br>
-            <label>Optional Coortinates</label>
-            <input type="text" th:field="${route.optionalCoordinates}"><br>
-            <label>Description</label>
-            <input type="text" th:field="${route.routeDescription}"><br>
-            <input type="submit" value="Issaugoti">
-            <label> <a href="http://localhost:8080/routes/kazkas"> scratch </a></label>
+            <label for="routeName">Route name</label></br>
+            <input id="routeName" type="text" th:field="${route.routeName}"><br>
+            <input id="startingCoordinates" type="hidden" th:field="${route.startingCoordinates}"><br>
+            <input id="endingCoordinates" type="hidden" th:field="${route.endingCoordinates}"><br>
+<!--            <label for="optionalCoordinates">Optional Coortinates</label>-->
+<!--            <input id="optionalCoordinates" type="text" th:field="${route.optionalCoordinates}"><br>-->
+            <label for="routeDescription">Description</label></br>
+            <textarea id="routeDescription" type="textarea" th:field="${route.routeDescription}"></textarea><br>
+            <input id="submit" onclick="redirectOnSubmit()" type="submit" value="Issaugoti">
+            <p> <a href="http://localhost:8080/routes/kazkas"> scratch </a></p>
         </form>
     </div>
     <div id="mapsContainer">
