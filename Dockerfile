@@ -1,6 +1,6 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM gradle:7.6.1-jdk17 AS build
 COPY . .
-RUN mvn clean package -DskipTests
+RUN gradle clean build
 
 FROM openjdk:17.0.1-jdk-slim
 COPY  --from=build build/libs/LocationFinder-0.0.1-SNAPSHOT-plain.jar LocationFinder.jar
